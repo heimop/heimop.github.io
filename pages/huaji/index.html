@@ -19,7 +19,7 @@
         <canvas id="canvas">您的浏览器不支持 HTML5 canvas 标签。</canvas>
     </div>
     
-    <script src="lib/jquery/dist/jquery.js"></script>
+
     <script type="text/javascript">
         var screenWidth = $(window).width();
         var screenHeight = $(window).height() - 5;
@@ -139,35 +139,7 @@
 
 
 
-        let center = new Point(cvs.width / 2, cvs.height / 2, 0);
-        let points = [];
-        let circlePointCount = 30;
-        let angelStep = Math.PI * 2 / circlePointCount;
-        let radius = 10;
-        let step = 40;
-
-        for (let i = -radius; i <= radius; i++) {
-            let y = i;
-
-            for (let j = 0; j < circlePointCount; j++) {
-
-                let xzRadius = Math.sqrt(radius * radius - y * y);
-                let xzAngel = j * angelStep;
-                let x = xzRadius * Math.cos(xzAngel);
-                let z = xzRadius * Math.sin(xzAngel);
-
-                // console.log(x,y,z);
-
-                points.push(
-                    new Point(
-                        x * step + cvs.width / 2,
-                        y * step + cvs.height / 2,
-                        z * step - cvs.width / 2
-                    )
-                );
-            }
-        }
-        draw();
+      
     </script>
 </body>
 </html>
