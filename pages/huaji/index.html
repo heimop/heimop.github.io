@@ -29,7 +29,7 @@
         canvas.setAttribute("width",screenWidth);
          canvas.setAttribute("height",screenHeight);
         var panel = canvas.getContext('2d');
-
+        canvas.addEventListener("touchmove",function(e){ e.preventDefault(); });
 
         var referenceList = [];
 
