@@ -21,13 +21,13 @@
     
 
     <script type="text/javascript">
-        var screenWidth = $(window).width();
-        var screenHeight = $(window).height() - 5;
+        var screenWidth = window.innerWidth;
+        var screenHeight =window.innerHeight - 5;
 
         //获得画布元素
         var canvas = document.getElementById('canvas');
-        $(canvas).attr("width", screenWidth);
-        $(canvas).attr("height", screenHeight);
+        canvas.setAttribute("width",screenWidth);
+         canvas.setAttribute("height",screenHeight);
         var panel = canvas.getContext('2d');
 
 
