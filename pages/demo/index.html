@@ -140,6 +140,7 @@
 
 			var audio = document.createElement( 'audio' );
 			audio.controls = true;
+			audio.setAttribute("preload","load");
 			audio.style.position = 'absolute';
 			audio.style.left = 'calc(50% - 150px)';
 			audio.style.bottom = '25px';
