@@ -1,148 +1,97 @@
-﻿<!DOCTYPE html>
+﻿<!DOCTYPE HTML>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <title></title>
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <style type="text/css">
-        body {
-            padding:0;
-            margin:0;
-        }
-        canvas {
-
-        }
-    </style>
+   <script src="stats.min.js"></script>
+   <script src="three.js"></script>
+   <script src="tween.js"></script>
+   <style type="text/css">
+     body{margin:0;padding:0; overflow:hidden;}
+     canvas{display:block;}
+   </style>
 </head>
 <body>
-    <div>
-        <canvas id="canvas">您的浏览器不支持 HTML5 canvas 标签。</canvas>
-    </div>
-    
-
-    <script type="text/javascript">
-        var a=document.createElement("canvas");
-        alert(a.getContext("webgl"));
-        
-        var screenWidth = window.innerWidth;
-        var screenHeight =window.innerHeight - 5;
-
-        //获得画布元素
-        var canvas = document.getElementById('canvas');
-        canvas.setAttribute("width",screenWidth);
-         canvas.setAttribute("height",screenHeight);
-        var panel = canvas.getContext('2d');
-        canvas.addEventListener("touchmove",function(e){ e.preventDefault(); });
-
-        var referenceList = [];
-
-        //视角距离
-        var perspective = 50
-
-        function DrawImg(x, y, width, height, z) {
-            x = x - width / 2;
-            y = y - height / 2;
-
-            var scale = (z )/ perspective
-            var x = (x - screenWidth / 2) * scale + screenWidth / 2
-            var y = (y - screenHeight / 2) * scale + screenHeight / 2
-                       
-            referenceList.push({
-                zIndex: z, func: function () {
-                    var img = new Image();
-                    img.src = "face.jpg";
-                    panel.drawImage(img, x, y, width * scale, height * scale);  
-                }
-            });
-        }
-        
-        if (!window.requestAnimationFrame) {
-            window.requestAnimationFrame = (window.webkitRequestAnimationFrame ||
-                window.mozRequestAnimationFrame ||
-                window.oRequestAnimationFrame ||
-                window.msRequestAnimationFrame ||
-                function (callback) {
-                    var self = this, start, finish;
-                    return window.setTimeout(function () {
-                        start = +new Date();
-                        callback(start);
-                        finish = +new Date();
-                        self.timeout = 1000 / 60 - (finish - start);
-                    }, self.timeout);
-                });
-        }
-
-        //清除画布     
-        function clearCanvas() {
-            window.requestAnimationFrame(clearCanvas);
-            panel.clearRect(0, 0, screenWidth, screenHeight);//   
-
-            referenceList.sort(function (a, b) {
-                if (a.zIndex > b.zIndex) {
-                    return 1;
-                }
-                else {
-                    return -1;
-                }
-            });
-
-            for (var i in referenceList) {
-                referenceList[i].func();
-            }
-
-            referenceList = [];
-        }
-        window.requestAnimationFrame(clearCanvas);
-
-        //创建点
-        function create(pointX,pointY) {
-
-            var counter = 15;
-
-            var animation = function () {
-                if (counter > 1000) {
-                    return;
-                }
-
-                window.requestAnimationFrame(animation);
-
-                counter += (1 / 60);
-
-                DrawImg(pointX, pointY, 100,100, counter);
-                //new Ball(pointX, pointY, counter, 50).render();
-            };
-            window.requestAnimationFrame(animation);
-        }
-       
-        //获取随机数
-        function random(start, end) {
-            return parseInt(Math.random(0, 1) * (end - start) + start);
-        }
-
-
-        //清除画布     
-        function randomCreate() {
-
-            var basePointX = screenWidth / 2+410;
-            var basePointY = screenHeight / 2+410;
-
-            var counter = 10;
-            for (var i = -counter / 2; i <= counter / 2; i++) {
-                for (var j = -counter / 2; j <= counter / 2; j++) {
- 
-                    create(basePointX + j * 1000, basePointY + i * 1000);
-                }
-            }
-
-            setTimeout(function () {
-                randomCreate();
-            }, 10000);
-        }
-        randomCreate();
+  <script type="text/javascript">
+     //场景
+      var scene = new THREE.Scene();
+      //相机
+      var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
+      camera.position.x = 10;
+      camera.position.z = 3000;
+      //渲染器
+      var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+      renderer.setClearColor(0x000000, 0); 
+      //性能监视器
+      var stats = new Stats();
+      stats.setMode(1); // 0: fps, 1: ms
+      stats.domElement.style.position = 'absolute'; //绝对坐标  
+      stats.domElement.style.left = '0px'; // (0,0)px,左上角  
+      stats.domElement.style.top = '0px';
+      document.body.appendChild(stats.domElement);
 
 
 
+
+      var light = new THREE.PointLight('#fff', 0.8);
+      light.position.set( 0, 500, 3000 );
+      scene.add(light);
+
+      var light1 = new THREE.PointLight('#fff', 0.3);
+      light1.position.set(0, -100, 3000);
+      scene.add(light1);
+
+     // var tween = new TWEEN.Tween(camera.position);
+      //  tween.to({ y: 1000 }, 15000).start();
+
+      // 1.  创建几何体 这里是平面  宽960 高480 上面的网格是1 
+      var geometry = new THREE.PlaneGeometry(200, 200);
       
-    </script>
+      //几何体创建纹理坐标 好像是四个角
+      geometry.vertices[0].uv = new THREE.Vector2(0, 0);
+      geometry.vertices[1].uv = new THREE.Vector2(1, 0);
+      geometry.vertices[2].uv = new THREE.Vector2(1, 1);
+      geometry.vertices[3].uv = new THREE.Vector2(0, 1);
+     
+
+      var loader = new THREE.TextureLoader();
+      var texture = loader.load("huaji.png");
+      var material = new THREE.MeshPhongMaterial({ color: '#fff', map: texture, transparent: true, opacity: 1, depthTest: false });
+      material.side = THREE.DoubleSide; //单面贴就删除
+
+      var meshB = new THREE.Mesh(geometry, material);
+      meshB.position.set(0,0,0);
+      new TWEEN.Tween(meshB.rotation).to({ x: Math.PI * 2 }, 4000).repeat(Infinity).start();
+      new TWEEN.Tween(meshB.position).to({ z: 5000 }, 20000).start();
+      scene.add(meshB);
+
+      for (var i = 0; i <= 50; i++) {
+          var mesh = new THREE.Mesh(geometry, material);
+          mesh.position.set((Math.random() - 0.5) * 5000, (Math.random() - 0.5) * 5000, (Math.random() - 0.5) * 5000);
+          var rotationX = Math.PI * (Math.random() * 2);
+          mesh.rotation.x = rotationX;
+          new TWEEN.Tween(mesh.rotation).to({ x: Math.PI * 2 + rotationX }, 4000).repeat(Infinity).start();
+          new TWEEN.Tween(mesh.position).to({ z: 5000 }, 20000).start();
+          scene.add(mesh);       
+      }
+
+
+     
+
+
+      //动画循环渲染
+      function render() {
+          requestAnimationFrame(render);
+          renderer.clear();
+          renderer.render(scene, camera);
+          TWEEN.update();
+
+          stats.update();
+          camera.lookAt(meshB.position);
+
+          // camera.position.z -= 0.05;   
+      }
+      render();
+  </script>
 </body>
 </html>
