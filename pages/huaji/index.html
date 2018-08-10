@@ -211,7 +211,7 @@
       console.log(groundTexture.wrapT);
       groundTexture.repeat.set(100, 100);
       groundTexture.anisotropy = 16;
-      var groundMaterial = new THREE.MeshLambertMaterial({ map: groundTexture,size:THREE.DoubleSide,transparent:true, opacity:0.4 });
+      var groundMaterial = new THREE.MeshLambertMaterial({ map: groundTexture,size:THREE.DoubleSide,transparent:true, opacity:1 });
       var mesh1 = new THREE.Mesh(new THREE.PlaneBufferGeometry(20000, 20000), groundMaterial);
       mesh1.position.y = - 250;
       mesh1.rotation.x = - Math.PI / 2;
